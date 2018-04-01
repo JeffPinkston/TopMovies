@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TopMovies</string>
+    <string name="view_top_movies">View Top Movies</string>
+    <string name="view_popular_movies">View Popular Movies</string>
+</resources>
