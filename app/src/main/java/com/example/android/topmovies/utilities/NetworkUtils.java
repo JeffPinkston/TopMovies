@@ -13,6 +13,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
@@ -20,11 +24,11 @@ public final class NetworkUtils {
     public static final String TOP_RATED_BASE_URL = BASE_URL + "top_rated";
     public static final String POPULAR_BASE_URL = BASE_URL + "popular";
     public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
-
     private static final String API_KEY = "";
     private static final String API_KEY_PARAM = "api_key";
     private static final String LANG_PARAM = "language";
     private static final String EN_US = "en-US";
+
 
     public static URL buildURL(String urlString) {
         Uri builtUri = Uri.parse(urlString).buildUpon()
@@ -61,29 +65,14 @@ public final class NetworkUtils {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+    public static String getResponseFromOkHttp(String url) throws IOException {
+        OkHttpClient client =  new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-
-        } catch (IOException e) {
-            Log.v(TAG, e.getMessage());
-            e.printStackTrace();
-            return null;
-        } finally {
-            urlConnection.disconnect();
-        }
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
-
 
 }

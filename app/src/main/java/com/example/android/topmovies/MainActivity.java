@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             URL moviesRequestUrl = NetworkUtils.buildURL(searchType);
 
             try {
-                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(moviesRequestUrl);
+                String jsonMovieResponse = NetworkUtils.getResponseFromOkHttp(moviesRequestUrl.toString());
 
                 JSONObject mainObject = new JSONObject(jsonMovieResponse);
                 JSONArray resultsJSON = mainObject.getJSONArray("results");
