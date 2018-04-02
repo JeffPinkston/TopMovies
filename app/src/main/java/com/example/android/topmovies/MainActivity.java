@@ -54,15 +54,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         loadMovieData(NetworkUtils.TOP_RATED_BASE_URL);
     }
 
-    public boolean isOnline() {
+    private void loadMovieData(String url) {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private void loadMovieData(String url) {
-        if (isOnline()) {
+        if (NetworkUtils.isOnline(cm)) {
             new FetchMoviesTask().execute(url);
         } else {
             Toast.makeText(this, "No Internet Connection!", Toast.LENGTH_LONG).show();
@@ -146,17 +141,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         int id = item.getItemId();
 
         if (id == R.id.action_sort) {
-            switch (mCurrentState) {
-                case POPULAR_MOVIES:
-                    loadMovieData(NetworkUtils.TOP_RATED_BASE_URL);
-                    mCurrentState = TOP_MOVIES;
-                    item.setTitle(R.string.view_top_movies);
-                    return true;
-                case TOP_MOVIES:
-                    loadMovieData(NetworkUtils.POPULAR_BASE_URL);
-                    mCurrentState = POPULAR_MOVIES;
-                    item.setTitle(R.string.view_popular_movies);
-                    return true;
+            if(mCurrentState == POPULAR_MOVIES) {
+                loadMovieData(NetworkUtils.TOP_RATED_BASE_URL);
+                mCurrentState = TOP_MOVIES;
+                item.setTitle(R.string.view_top_movies);
+                return true;
+            } else if(mCurrentState == TOP_MOVIES) {
+                loadMovieData(NetworkUtils.POPULAR_BASE_URL);
+                mCurrentState = POPULAR_MOVIES;
+                item.setTitle(R.string.view_popular_movies);
+                return true;
             }
         }
 

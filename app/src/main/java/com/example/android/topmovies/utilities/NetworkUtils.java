@@ -1,5 +1,8 @@
 package com.example.android.topmovies.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -13,8 +16,9 @@ import java.util.Scanner;
 public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    public static final String TOP_RATED_BASE_URL = "https://api.themoviedb.org/3/movie/top_rated";
-    public static final String POPULAR_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String TOP_RATED_BASE_URL = BASE_URL + "top_rated";
+    public static final String POPULAR_BASE_URL = BASE_URL + "popular";
     public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
     private static final String API_KEY = "";
@@ -28,7 +32,7 @@ public final class NetworkUtils {
                 .appendQueryParameter(LANG_PARAM, EN_US)
                 .appendQueryParameter("page", "1")
                 .build();
-
+    
         URL url = buildURL(builtUri);
 
         Log.v(TAG, "Built URI " + url);
@@ -50,6 +54,11 @@ public final class NetworkUtils {
         }
 
         return url;
+    }
+
+    public static boolean isOnline(ConnectivityManager cm) {
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
